@@ -15,7 +15,7 @@ class Saxoff:
         if isinstance(data, str):
             return self.__parse(ET.fromstring(data))
         elif isinstance(data, io.IOBase):
-            return self.__parse(ET.parse(data.read()))
+            return self.__parse(ET.fromstring(data.read()))
         else:
             raise StandardError("Saxoff requires a string or file like object.")
             
@@ -30,7 +30,7 @@ class Saxoff:
         else:
             base = root.getroot()
             
-        result = {base.tag: {'type': 'root', 'children': [], 'attributes': None}}
+        result = {base.tag: {'type': 'root', 'children': {}, 'attributes': None}}
         
         if base.attrib:
             result[base.tag]['attributes'] = {}
@@ -38,7 +38,8 @@ class Saxoff:
                 result[base.tag]['attributes'][item] = base.attrib[item]
                 
         for child in base:
-            self.add_child(self.build_child(child), result, base.tag)
+            child_element = self.build_child(child)
+            result[base.tag]['children'][child.tag] = child_element[child.tag]
             
         return result
         
@@ -48,16 +49,18 @@ class Saxoff:
         
         :param element: An XML element
         """
-        child_object = {element.tag: {'type': 'child', 'children': None, 'attributes': None}}
+        child_object = {element.tag: {'type': 'child', 'children': None, 'attributes': None, 'value': element.text.strip() or None}}
         
         if element.attrib:
             child_object[element.tag]['attributes'] = {}
             for item in element.attrib:
-                child_object[element.tag]['attributes'][item] = element.attrib[item]
+                if "{" in item:
+                    child_object[element.tag]['attributes'][item.split("}")[1]] = element.attrib[item]
+                else:
+                    child_object[element.tag]['attributes'][item] = element.attrib[item]
                 
-        if len(list(element)):
-            for child in element:
-                self.add_child(self.build_child(child), child_object, element.tag)
+        for child in element:
+            self.add_child(self.build_child(child), child_object, element.tag)
         
         return child_object
         
@@ -73,12 +76,12 @@ class Saxoff:
         """
         if not dictionary[root_tag]['children']:
             dictionary[root_tag]['children'] = {}
-            dictionary[root_tag]['children'][list(child.keys())[0]] = child
+            dictionary[root_tag]['children'][list(child.keys())[0]] = child[list(child.keys())[0]]
         else:
             if list(child.keys())[0] in dictionary[root_tag]['children']:
                 if dictionary[root_tag]['children'][list(child.keys())[0]].get('type', None) == "node":
-                    dictionary[root_tag]['children'][list(child.keys())[0]]['children'].append(child)
+                    dictionary[root_tag]['children'][list(child.keys())[0]]['children'].append(child[list(child.keys())[0]])
                 else:
-                    dictionary[root_tag]['children'][list(child.keys())[0]] = {'type': 'node', 'children': [dictionary[root_tag]['children'][list(child.keys())[0]], child]}
+                    dictionary[root_tag]['children'][list(child.keys())[0]] = {'type': 'node', 'children': [dictionary[root_tag]['children'][list(child.keys())[0]], child[list(child.keys())[0]]]}
             else:
-                dictionary[root_tag]['children'][list(child.keys())[0]] = child
+                dictionary[root_tag]['children'][list(child.keys())[0]] = child[list(child.keys())[0]]
