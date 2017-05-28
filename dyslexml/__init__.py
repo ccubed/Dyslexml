@@ -2,14 +2,14 @@ import io
 import xml.etree.ElementTree as ET
 
 
-class Saxoff:
+class Dyslexml:
     def __init__(self):
         pass
-    
+
     def parse(self, data):
         """
-        Start a Saxoff session and return a dict.
-        
+        Given a file like object or xml string, return a dictionary.
+
         :param data: File like object or xml string
         """
         if isinstance(data, str):
@@ -17,40 +17,40 @@ class Saxoff:
         elif isinstance(data, io.IOBase):
             return self.__parse(ET.fromstring(data.read()))
         else:
-            raise StandardError("Saxoff requires a string or file like object.")
-            
+            raise StandardError("Dyslexml requires a string or file like object.")
+
     def __parse(self, root):
         """
         Parse an XML document into a resulting dictionary.
-        
+
         :param root: The ElementTree Instance
         """
         if isinstance(root, ET.Element):
             base = root
         else:
             base = root.getroot()
-            
+
         result = {base.tag: {'type': 'root', 'children': {}, 'attributes': None}}
-        
+
         if base.attrib:
             result[base.tag]['attributes'] = {}
             for item in base.attrib:
                 result[base.tag]['attributes'][item] = base.attrib[item]
-                
+
         for child in base:
             child_element = self.build_child(child)
             result[base.tag]['children'][child.tag] = child_element[child.tag]
-            
+
         return result
-        
+
     def build_child(self, element):
         """
         Build a resulting child object given the child element.
-        
+
         :param element: An XML element
         """
         child_object = {element.tag: {'type': 'child', 'children': None, 'attributes': None, 'value': element.text.strip() or None}}
-        
+
         if element.attrib:
             child_object[element.tag]['attributes'] = {}
             for item in element.attrib:
@@ -58,18 +58,18 @@ class Saxoff:
                     child_object[element.tag]['attributes'][item.split("}")[1]] = element.attrib[item]
                 else:
                     child_object[element.tag]['attributes'][item] = element.attrib[item]
-                
+
         for child in element:
             self.add_child(self.build_child(child), child_object, element.tag)
-        
+
         return child_object
-        
+
     def add_child(self, child, dictionary, root_tag):
         """
         Adding a child has some complication to it because we have to dynamically
         change data types in the resulting dictionary depending on the amount of each
         child. That's in addition to building the child object.
-        
+
         :param child: The parsed Child object from an XML element
         :param dictionary dict: The dictionary so far
         :param root_tag str: The name of the root element
