@@ -71,5 +71,25 @@ In our example, we have many titles. Each anime has around six or more. I could 
 This is where the node type comes in. The node type tells you that every child contained in children is of the type that its parent is.
 In our example above, the **title** attribute is a node. Each child contained in the children of that dictionary is a title.
 I thought this looked better, because you could think of it programmatically as for each title.
-# Planned Features
-* General Purpose Object -> XML
+
+# Usage
+## XML to Dictionary
+```python
+import dyslexml
+dyslexml.Dyslexml.toDict(my_xml_string)
+```
+
+## Python Object to XML
+```python
+import dyslexml
+a = {'a': 1, 'b': 2, 3: 'This is a long key', bytes(10): 'This is a crazy but acceptable key because I'm basically an ascii message'}
+dyslexml.Dyslexml.toXml(a)
+```
+
+## Typing that out is hard
+```python
+from dyslexml import Dyslexml
+a = Dyslexml()
+a.toDict([1,2,3])
+a.toXml(my_xml_string)
+```

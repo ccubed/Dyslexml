@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="dyslexml",
-    version='0.1',
+    version='1.0',
     packages=['dyslexml'],
     url='https://github.com/ccubed/Dyslexml',
     license='MIT',
@@ -15,5 +15,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Libraries'
     ],
-    keywords="XML"
+    keywords="XML Converters"
 )
