@@ -39,7 +39,7 @@ def translate(thing, encoding="utf-8"):
 def _strs(thing, encoding):
     """
     Internal Method for turning Strings into an XML document.
-    
+
     :param thing: the string
     :param encoding: the encoding for strings
     :return: string containing xml
@@ -53,9 +53,9 @@ def _strs(thing, encoding):
 def _lists(thing, encoding):
     """
     Internal Method for turning lists into an XML document.
-    
+
     :param list thing: the list
-    :param str encoding: the encoding for strings 
+    :param str encoding: the encoding for strings
     :return: string containing xml
     :rtype: str
     """
@@ -71,7 +71,7 @@ def _lists(thing, encoding):
 def _ints(thing):
     """
     Internal Method for turning ints into an XML document.
-    
+
     :param thing: the int
     :return: string containing xml
     :rtype: str
@@ -84,7 +84,7 @@ def _ints(thing):
 def _floats(thing):
     """
     Internal Method for turning floats into an XML document.
-    
+
     :param thing: the float
     :return: string containing xml
     :rtype: str
@@ -184,9 +184,9 @@ def _decimals(thing):
 def build_subelement(root, item, encoding):
     """
     Internal subelement factory method.
-    
+
     :param root: root element
-    :param item: some object 
+    :param item: some object
     :param encoding: encoding for strings
     :return: subelement
     :rtype: xml.etree.ElementTree.SubElement
@@ -216,14 +216,14 @@ def build_subelement(root, item, encoding):
 def _lists__se(root, item, encoding):
     """
     list subelement factory
-    
+
     :param root: root element
     :param item: the list
     :param encoding: encoding for strings
     :return: subelement
     :rtype: xml.etree.ElementTree.SubElement
     """
-    subroot = ET.SubElement(root, "list", {'length': str(len(item))})
+    subroot = ET.SubElement(root, item.__class__.__name__, {'length': str(len(item))})
 
     for obj in item:
         build_subelement(subroot, obj, encoding)
@@ -232,7 +232,7 @@ def _lists__se(root, item, encoding):
 def _strs__se(root, item, encoding):
     """
     string subelement factory.
-    
+
     :param root: root element
     :param item: the string
     :param encoding: encoding for strings
@@ -245,7 +245,7 @@ def _strs__se(root, item, encoding):
 def _ints__se(root, item):
     """
     int subelement factory.
-    
+
     :param root: root element
     :param item: the int
     :return: xml.etree.ElementTree.SubElement
@@ -257,7 +257,7 @@ def _ints__se(root, item):
 def _floats__se(root, item):
     """
     float subelement factory. This uses float.hex.
-    
+
     :param root: root element
     :param item: the float
     :return: xml.etree.ElementTree.SubElement

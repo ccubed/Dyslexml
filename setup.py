@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="dyslexml",
-    version='1.1',
+    version='1.2',
     packages=['dyslexml'],
     url='https://github.com/ccubed/Dyslexml',
     license='MIT',
